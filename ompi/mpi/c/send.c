@@ -33,6 +33,8 @@
 #include "ompi/memchecker.h"
 #include "ompi/runtime/ompi_spc.h"
 
+#include "ompi/mpi/c/mpi_trace.h"
+
 #if OMPI_BUILD_MPI_PROFILING
 #if OPAL_HAVE_WEAK_SYMBOLS
 #pragma weak MPI_Send = PMPI_Send
@@ -46,6 +48,7 @@ static const char FUNC_NAME[] = "MPI_Send";
 int MPI_Send(const void *buf, int count, MPI_Datatype type, int dest,
              int tag, MPI_Comm comm)
 {
+    printf("send called\r\n");
     int rc = MPI_SUCCESS;
 
     SPC_RECORD(OMPI_SPC_SEND, 1);
@@ -89,7 +92,13 @@ int MPI_Send(const void *buf, int count, MPI_Datatype type, int dest,
     if (MPI_PROC_NULL == dest) {
         return MPI_SUCCESS;
     }
+    printf("send before MCA_PML_CALL\r\n");
 
     rc = MCA_PML_CALL(send(buf, count, type, dest, tag, MCA_PML_BASE_SEND_STANDARD, comm));
+    printf("send after MCA_PML_CALL\r\n");
+
+    // mpi_tracepoint(open_mpi, common, "MPI_Send", count, type->name);
+    printf("send after tracepoint\r\n");
+
     OMPI_ERRHANDLER_RETURN(rc, comm, rc, FUNC_NAME);
 }

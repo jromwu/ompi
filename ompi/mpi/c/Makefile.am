@@ -39,7 +39,8 @@ if BUILD_MPI_BINDINGS_LAYER
 noinst_LTLIBRARIES += libmpi_c_noprofile.la
 endif
 
-headers = bindings.h
+headers = bindings.h \
+        mpi_trace.h
 
 # attr_fn.c contains attribute manipulation functions which do not
 # profiling implications, and so are always built.
@@ -486,7 +487,8 @@ interface_profile_sources = \
         win_test.c \
         win_unlock.c \
         win_unlock_all.c \
-        win_wait.c
+        win_wait.c \
+        mpi_trace.c
 
 # The following functions were removed from the MPI standard, but are
 # retained for ABI compliance reasons.  They are listed independently

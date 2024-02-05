@@ -35,6 +35,8 @@
 #include "ompi/memchecker.h"
 #include "ompi/runtime/ompi_spc.h"
 
+#include "ompi/mpi/c/mpi_trace.h"
+
 #if OMPI_BUILD_MPI_PROFILING
 #if OPAL_HAVE_WEAK_SYMBOLS
 #pragma weak MPI_Gather = PMPI_Gather
@@ -194,5 +196,8 @@ int MPI_Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
     err = comm->c_coll->coll_gather(sendbuf, sendcount, sendtype, recvbuf,
                                    recvcount, recvtype, root, comm,
                                    comm->c_coll->coll_gather_module);
+
+    mpi_tracepoint(open_mpi, common, "MPI_Gather", sendcount, sendtype->name);
+
     OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);
 }

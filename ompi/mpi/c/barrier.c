@@ -28,6 +28,8 @@
 #include "ompi/memchecker.h"
 #include "ompi/runtime/ompi_spc.h"
 
+#include "ompi/mpi/c/mpi_trace.h"
+
 #if OMPI_BUILD_MPI_PROFILING
 #if OPAL_HAVE_WEAK_SYMBOLS
 #pragma weak MPI_Barrier = PMPI_Barrier
@@ -85,6 +87,7 @@ int MPI_Barrier(MPI_Comm comm)
   }
 
   /* All done */
+  mpi_tracepoint(open_mpi, common, "MPI_Barrier", 0, "");
 
   OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);
 }

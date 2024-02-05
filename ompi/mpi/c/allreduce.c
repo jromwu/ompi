@@ -34,6 +34,8 @@
 #include "ompi/memchecker.h"
 #include "ompi/runtime/ompi_spc.h"
 
+#include "ompi/mpi/c/mpi_trace.h"
+
 #if OMPI_BUILD_MPI_PROFILING
 #if OPAL_HAVE_WEAK_SYMBOLS
 #pragma weak MPI_Allreduce = PMPI_Allreduce
@@ -124,6 +126,9 @@ int MPI_Allreduce(const void *sendbuf, void *recvbuf, int count,
                                       datatype, op, comm,
                                       comm->c_coll->coll_allreduce_module);
     OBJ_RELEASE(op);
+
+    mpi_tracepoint(open_mpi, common, "MPI_Allreduce", count, datatype->name);
+
     OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);
 }
 

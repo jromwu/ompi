@@ -31,6 +31,8 @@
 #include "ompi/request/request.h"
 #include "ompi/runtime/ompi_spc.h"
 
+#include "ompi/mpi/c/mpi_trace.h"
+
 #if OMPI_BUILD_MPI_PROFILING
 #if OPAL_HAVE_WEAK_SYMBOLS
 #pragma weak MPI_Recv = PMPI_Recv
@@ -44,6 +46,7 @@ static const char FUNC_NAME[] = "MPI_Recv";
 int MPI_Recv(void *buf, int count, MPI_Datatype type, int source,
              int tag, MPI_Comm comm, MPI_Status *status)
 {
+    printf("recv called\r\n");
     int rc = MPI_SUCCESS;
 
     SPC_RECORD(OMPI_SPC_RECV, 1);
@@ -101,6 +104,13 @@ int MPI_Recv(void *buf, int count, MPI_Datatype type, int source,
         return MPI_SUCCESS;
     }
 
+    printf("recv before MCA_PML_CALL\r\n");
+
     rc = MCA_PML_CALL(recv(buf, count, type, source, tag, comm, status));
+    printf("recv after MCA_PML_CALL\r\n");
+
+    // mpi_tracepoint(open_mpi, common, "MPI_Recv", count, type->name);
+    printf("recv after tracepoint\r\n");
+
     OMPI_ERRHANDLER_RETURN(rc, comm, rc, FUNC_NAME);
 }
