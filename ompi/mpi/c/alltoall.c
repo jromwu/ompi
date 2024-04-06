@@ -36,6 +36,8 @@
 #include "ompi/memchecker.h"
 #include "ompi/runtime/ompi_spc.h"
 
+#include "ompi/mpi/c/mpi_trace.h"
+
 #if OMPI_BUILD_MPI_PROFILING
 #if OPAL_HAVE_WEAK_SYMBOLS
 #pragma weak MPI_Alltoall = PMPI_Alltoall
@@ -50,6 +52,7 @@ int MPI_Alltoall(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                  void *recvbuf, int recvcount, MPI_Datatype recvtype,
                  MPI_Comm comm)
 {
+    mark_c("ata");
     int err;
     size_t recvtype_size;
 
@@ -120,6 +123,7 @@ int MPI_Alltoall(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
     err = comm->c_coll->coll_alltoall(sendbuf, sendcount, sendtype,
                                      recvbuf, recvcount, recvtype,
                                      comm, comm->c_coll->coll_alltoall_module);
+    mark_c("/ata");
     OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);
 }
 

@@ -42,6 +42,7 @@ static const char FUNC_NAME[] = "MPI_Barrier";
 
 int MPI_Barrier(MPI_Comm comm)
 {
+  mark_c("bar");
   int err = MPI_SUCCESS;
 
   SPC_RECORD(OMPI_SPC_BARRIER, 1);
@@ -87,6 +88,7 @@ int MPI_Barrier(MPI_Comm comm)
   }
 
   /* All done */
+  mark_c("/bar");
   mpi_tracepoint(open_mpi, common, "MPI_Barrier", 0, "");
 
   OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);

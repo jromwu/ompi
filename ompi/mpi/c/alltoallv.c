@@ -34,6 +34,8 @@
 #include "ompi/memchecker.h"
 #include "ompi/runtime/ompi_spc.h"
 
+#include "ompi/mpi/c/mpi_trace.h"
+
 #if OMPI_BUILD_MPI_PROFILING
 #if OPAL_HAVE_WEAK_SYMBOLS
 #pragma weak MPI_Alltoallv = PMPI_Alltoallv
@@ -49,6 +51,7 @@ int MPI_Alltoallv(const void *sendbuf, const int sendcounts[],
                   void *recvbuf, const int recvcounts[], const int rdispls[],
                   MPI_Datatype recvtype, MPI_Comm comm)
 {
+    mark_c("atav");
     int i, size, err;
 
     SPC_RECORD(OMPI_SPC_ALLTOALLV, 1);
@@ -139,6 +142,7 @@ int MPI_Alltoallv(const void *sendbuf, const int sendcounts[],
     err = comm->c_coll->coll_alltoallv(sendbuf, sendcounts, sdispls, sendtype,
                                       recvbuf, recvcounts, rdispls, recvtype,
                                       comm, comm->c_coll->coll_alltoallv_module);
+    mark_c("/atav");
     OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);
 }
 
