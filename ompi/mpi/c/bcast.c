@@ -44,7 +44,7 @@ static const char FUNC_NAME[] = "MPI_Bcast";
 int MPI_Bcast(void *buffer, int count, MPI_Datatype datatype,
               int root, MPI_Comm comm)
 {
-    mark_c("bca");
+    mark_c("bcst");
     int err;
 
     SPC_RECORD(OMPI_SPC_BCAST, 1);
@@ -128,8 +128,7 @@ int MPI_Bcast(void *buffer, int count, MPI_Datatype datatype,
     err = comm->c_coll->coll_bcast(buffer, count, datatype, root, comm,
                                   comm->c_coll->coll_bcast_module);
 
-    mark_c("/bca");
-    mpi_tracepoint(open_mpi, common, "MPI_Bcast", count, datatype->name);
+    mark_c("/bcst");
 
     OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);
 }

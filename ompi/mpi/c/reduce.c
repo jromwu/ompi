@@ -49,7 +49,7 @@ static const char FUNC_NAME[] = "MPI_Reduce";
 int MPI_Reduce(const void *sendbuf, void *recvbuf, int count,
                MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm)
 {
-    mark_c("red");
+    mark_c("rdce");
     int err;
 
     SPC_RECORD(OMPI_SPC_REDUCE, 1);
@@ -155,8 +155,6 @@ int MPI_Reduce(const void *sendbuf, void *recvbuf, int count,
                                    comm->c_coll->coll_reduce_module);
     OBJ_RELEASE(op);
 
-    mark_c("/red");
-    mpi_tracepoint(open_mpi, common, "MPI_Reduce", count, datatype->name);
-
+    mark_c("/rdce");
     OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);
 }

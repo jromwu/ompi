@@ -51,6 +51,7 @@ int MPI_Scatter(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                 void *recvbuf, int recvcount, MPI_Datatype recvtype,
                 int root, MPI_Comm comm)
 {
+    mark_c("sctr");
     int err;
 
     SPC_RECORD(OMPI_SPC_SCATTER, 1);
@@ -180,7 +181,6 @@ int MPI_Scatter(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                                     recvcount, recvtype, root, comm,
                                     comm->c_coll->coll_scatter_module);
 
-    mpi_tracepoint(open_mpi, common, "MPI_Scatter", sendcount, sendtype->name); 
-    
+    mark_c("/sctr");
     OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);
 }

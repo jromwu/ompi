@@ -51,6 +51,7 @@ int MPI_Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                void *recvbuf, int recvcount, MPI_Datatype recvtype,
                int root, MPI_Comm comm)
 {
+    mark_c("gthr");
     int err;
 
     SPC_RECORD(OMPI_SPC_GATHER, 1);
@@ -197,7 +198,6 @@ int MPI_Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                                    recvcount, recvtype, root, comm,
                                    comm->c_coll->coll_gather_module);
 
-    mpi_tracepoint(open_mpi, common, "MPI_Gather", sendcount, sendtype->name);
-
+    mark_c("/gthr");
     OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);
 }

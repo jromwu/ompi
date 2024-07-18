@@ -29,6 +29,8 @@
 #include "ompi/memchecker.h"
 #include "ompi/runtime/ompi_spc.h"
 
+#include "ompi/mpi/c/mpi_trace.h"
+
 #if OMPI_BUILD_MPI_PROFILING
 #if OPAL_HAVE_WEAK_SYMBOLS
 #pragma weak MPI_Wait = PMPI_Wait
@@ -41,6 +43,7 @@ static const char FUNC_NAME[] = "MPI_Wait";
 
 int MPI_Wait(MPI_Request *request, MPI_Status *status)
 {
+    mark_c("wait");
     SPC_RECORD(OMPI_SPC_WAIT, 1);
 
     MEMCHECKER(
@@ -66,6 +69,7 @@ int MPI_Wait(MPI_Request *request, MPI_Status *status)
                 opal_memchecker_base_mem_undefined(&status->MPI_ERROR, sizeof(int));
             );
         }
+        mark_c("/wait");
         return MPI_SUCCESS;
     }
 
@@ -78,6 +82,7 @@ int MPI_Wait(MPI_Request *request, MPI_Status *status)
                 opal_memchecker_base_mem_undefined(&status->MPI_ERROR, sizeof(int));
             }
         );
+        mark_c("/wait");
         return MPI_SUCCESS;
     }
 
@@ -86,5 +91,6 @@ int MPI_Wait(MPI_Request *request, MPI_Status *status)
             opal_memchecker_base_mem_undefined(&status->MPI_ERROR, sizeof(int));
         }
     );
+    mark_c("/wait");
     return ompi_errhandler_request_invoke(1, request, FUNC_NAME);
 }

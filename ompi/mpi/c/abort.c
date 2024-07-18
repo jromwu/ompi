@@ -28,6 +28,8 @@
 #include "ompi/memchecker.h"
 #include "ompi/communicator/communicator.h"
 
+#include "ompi/mpi/c/mpi_trace.h"
+
 #if OMPI_BUILD_MPI_PROFILING
 #if OPAL_HAVE_WEAK_SYMBOLS
 #pragma weak MPI_Abort = PMPI_Abort
@@ -40,6 +42,8 @@ static const char FUNC_NAME[] = "MPI_Abort";
 
 int MPI_Abort(MPI_Comm comm, int errorcode)
 {
+    mark_c("abort");
+
     MEMCHECKER(
         memchecker_comm(comm);
     );

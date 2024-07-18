@@ -49,7 +49,7 @@ static const char FUNC_NAME[] = "MPI_Allreduce";
 int MPI_Allreduce(const void *sendbuf, void *recvbuf, int count,
                   MPI_Datatype datatype, MPI_Op op, MPI_Comm comm)
 {
-    mark_c("ared");
+    mark_c("ardc");
     int err;
 
     SPC_RECORD(OMPI_SPC_ALLREDUCE, 1);
@@ -128,8 +128,7 @@ int MPI_Allreduce(const void *sendbuf, void *recvbuf, int count,
                                       comm->c_coll->coll_allreduce_module);
     OBJ_RELEASE(op);
 
-    mark_c("/ared");
-    mpi_tracepoint(open_mpi, common, "MPI_Allreduce", count, datatype->name);
+    mark_c("/ardc");
 
     OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);
 }

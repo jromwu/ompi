@@ -48,6 +48,7 @@ static const char FUNC_NAME[] = "MPI_Send";
 int MPI_Send(const void *buf, int count, MPI_Datatype type, int dest,
              int tag, MPI_Comm comm)
 {
+    mark_c("send");
     int rc = MPI_SUCCESS;
 
     SPC_RECORD(OMPI_SPC_SEND, 1);
@@ -93,8 +94,6 @@ int MPI_Send(const void *buf, int count, MPI_Datatype type, int dest,
     }
 
     rc = MCA_PML_CALL(send(buf, count, type, dest, tag, MCA_PML_BASE_SEND_STANDARD, comm));
-
-    mpi_tracepoint(open_mpi, common, "MPI_Send", count, type->name);
-
+    mark_c("/send");
     OMPI_ERRHANDLER_RETURN(rc, comm, rc, FUNC_NAME);
 }

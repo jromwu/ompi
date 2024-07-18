@@ -51,6 +51,7 @@ int MPI_Allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                   void *recvbuf, int recvcount, MPI_Datatype recvtype,
                   MPI_Comm comm)
 {
+    mark_c("agtr");
     int err;
 
     SPC_RECORD(OMPI_SPC_ALLGATHER, 1);
@@ -138,8 +139,7 @@ int MPI_Allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                                       recvbuf, recvcount, recvtype, comm,
                                       comm->c_coll->coll_allgather_module);
 
-    mpi_tracepoint(open_mpi, common, "MPI_Allgather", sendcount, sendtype->name);
-
+    mark_c("/agtr");
     OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);
 }
 

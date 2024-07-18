@@ -30,6 +30,8 @@
 #include "ompi/memchecker.h"
 #include "ompi/runtime/ompi_spc.h"
 
+#include "ompi/mpi/c/mpi_trace.h"
+
 #if OMPI_BUILD_MPI_PROFILING
 #if OPAL_HAVE_WEAK_SYMBOLS
 #pragma weak MPI_Irecv = PMPI_Irecv
@@ -43,6 +45,7 @@ static const char FUNC_NAME[] = "MPI_Irecv";
 int MPI_Irecv(void *buf, int count, MPI_Datatype type, int source,
               int tag, MPI_Comm comm, MPI_Request *request)
 {
+    mark_c("ircv");
     int rc = MPI_SUCCESS;
 
     SPC_RECORD(OMPI_SPC_IRECV, 1);
@@ -87,5 +90,6 @@ int MPI_Irecv(void *buf, int count, MPI_Datatype type, int source,
         memchecker_call(&opal_memchecker_base_mem_noaccess, buf, count, type);
     );
     rc = MCA_PML_CALL(irecv(buf,count,type,source,tag,comm,request));
+    mark_c("/ircv");
     OMPI_ERRHANDLER_RETURN(rc, comm, rc, FUNC_NAME);
 }

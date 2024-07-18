@@ -46,6 +46,7 @@ static const char FUNC_NAME[] = "MPI_Recv";
 int MPI_Recv(void *buf, int count, MPI_Datatype type, int source,
              int tag, MPI_Comm comm, MPI_Status *status)
 {
+    mark_c("recv");
     int rc = MPI_SUCCESS;
 
     SPC_RECORD(OMPI_SPC_RECV, 1);
@@ -104,8 +105,6 @@ int MPI_Recv(void *buf, int count, MPI_Datatype type, int source,
     }
 
     rc = MCA_PML_CALL(recv(buf, count, type, source, tag, comm, status));
-
-    mpi_tracepoint(open_mpi, common, "MPI_Recv", count, type->name);
-
+    mark_c("/recv");
     OMPI_ERRHANDLER_RETURN(rc, comm, rc, FUNC_NAME);
 }

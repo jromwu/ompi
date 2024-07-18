@@ -34,6 +34,8 @@
 #include "ompi/memchecker.h"
 #include "ompi/runtime/ompi_spc.h"
 
+#include "ompi/mpi/c/mpi_trace.h"
+
 #if OMPI_BUILD_MPI_PROFILING
 #if OPAL_HAVE_WEAK_SYMBOLS
 #pragma weak MPI_Isend = PMPI_Isend
@@ -47,6 +49,7 @@ static const char FUNC_NAME[] = "MPI_Isend";
 int MPI_Isend(const void *buf, int count, MPI_Datatype type, int dest,
               int tag, MPI_Comm comm, MPI_Request *request)
 {
+    mark_c("isnd");
     int rc = MPI_SUCCESS;
 
     SPC_RECORD(OMPI_SPC_ISEND, 1);
@@ -100,6 +103,7 @@ int MPI_Isend(const void *buf, int count, MPI_Datatype type, int dest,
 
     rc = MCA_PML_CALL(isend(buf, count, type, dest, tag,
                             MCA_PML_BASE_SEND_STANDARD, comm, request));
+    mark_c("/isnd");
     OMPI_ERRHANDLER_RETURN(rc, comm, rc, FUNC_NAME);
 }
 
